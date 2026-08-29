@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
-const CLI_PATH = join(import.meta.dir, 'index.ts')
+const CLI_PATH = join(import.meta.dir, '..', 'index.ts')
 
 async function runCli(args: string[]): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   const proc = Bun.spawn(['bun', 'run', CLI_PATH, ...args], {
@@ -39,11 +39,12 @@ describe('CLI', () => {
   })
 
   it('should find .mdx files and print them', async () => {
-    await writeFile(join(tempDir, 'hello.mdx'), '---\ntitle: Hello\n---')
+    await writeFile(join(tempDir, 'hello.mdx'), '---\ntitle: Hello\n---\nBody')
     const { stdout, exitCode } = await runCli([tempDir])
     expect(exitCode).toBe(0)
     expect(stdout).toContain('Found 1 .mdx file(s):')
-    expect(stdout).toContain('hello.mdx')
+    expect(stdout).toContain('Hello')
+    expect(stdout).toContain('path:')
   })
 
   it('should show "No .mdx files found" when directory is empty', async () => {
@@ -53,23 +54,23 @@ describe('CLI', () => {
   })
 
   it('should find multiple .mdx files', async () => {
-    await writeFile(join(tempDir, 'a.mdx'), 'content')
-    await writeFile(join(tempDir, 'b.mdx'), 'content')
+    await writeFile(join(tempDir, 'a.mdx'), '---\ntitle: A\n---\nContent A')
+    await writeFile(join(tempDir, 'b.mdx'), '---\ntitle: B\n---\nContent B')
     const { stdout, exitCode } = await runCli([tempDir])
     expect(exitCode).toBe(0)
     expect(stdout).toContain('Found 2 .mdx file(s):')
-    expect(stdout).toContain('a.mdx')
-    expect(stdout).toContain('b.mdx')
+    expect(stdout).toContain('A')
+    expect(stdout).toContain('B')
   })
 
   it('should find .mdx files in nested directories', async () => {
     const nestedDir = join(tempDir, 'blog', 'posts')
     await mkdir(nestedDir, { recursive: true })
-    await writeFile(join(nestedDir, 'post.mdx'), 'content')
+    await writeFile(join(nestedDir, 'post.mdx'), '---\ntitle: Post\n---\nBody')
     const { stdout, exitCode } = await runCli([tempDir])
     expect(exitCode).toBe(0)
     expect(stdout).toContain('Found 1 .mdx file(s):')
-    expect(stdout).toContain('post.mdx')
+    expect(stdout).toContain('Post')
   })
 
   it('should not match .md files', async () => {

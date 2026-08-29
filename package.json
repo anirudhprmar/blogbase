@@ -1,0 +1,21 @@
+{
+  "name": "cli",
+  "bin": {
+    "blog-engine": "./index.ts"
+  },
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "picocolors": "^1.1.1"
+  }
+}

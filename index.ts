@@ -1,6 +1,7 @@
 import { program } from "commander";
 import { findFiles } from "./scanner";
-import { parseFile } from "./parser";
+import { parseFile, type Post } from "./parser";
+import { lookForLinks } from "./link";
 
 program
   .name('blog-engine')
@@ -14,14 +15,21 @@ program
       return;
     }
     console.log(`Found ${files.length} .mdx file(s):\n`);
+    
+    const posts: Post[] = [];
+    
     for (const file of files) {
       const post = await parseFile(file);
+      posts.push(post);
       console.log(`  ${post.title || file}`);
       console.log(`    path: ${post.path}`);
       if (post.description) {
         console.log(`    description: ${post.description}`);
       }
-      console.log();
+    }
+    const suggestions = lookForLinks(posts)
+    if (suggestions.length > 0) {
+      console.log(suggestions);
     }
   })
 

@@ -20,7 +20,7 @@ describe('CLI', () => {
   let tempDir: string
 
   beforeEach(async () => {
-    tempDir = await mkdtemp(join(tmpdir(), 'blog-engine-cli-test-'))
+    tempDir = await mkdtemp(join(tmpdir(), 'blogbase-cli-test-'))
   })
 
   afterEach(async () => {
@@ -34,7 +34,7 @@ describe('CLI', () => {
 
   it('should show help text', async () => {
     const { stdout } = await runCli(['--help'])
-    expect(stdout).toContain('blog-engine')
+    expect(stdout).toContain('blogbase')
     expect(stdout).toContain('directory path to look in')
   })
 

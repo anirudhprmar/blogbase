@@ -1,7 +1,7 @@
 {
   "name": "cli",
   "bin": {
-    "blog-engine": "./index.ts"
+    "blogbase": "./index.ts"
   },
   "module": "index.ts",
   "type": "module",

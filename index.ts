@@ -4,7 +4,7 @@ import { parseFile, type Post } from "./parser";
 import { lookForLinks } from "./link";
 
 program
-  .name('blog-engine')
+  .name('blogbase')
   .description('looking for markdown files')
   .version('0.1.0')
   .argument('<path>', 'directory path to look in')

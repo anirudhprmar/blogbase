@@ -28,9 +28,12 @@ program
       }
     }
     const suggestions = lookForLinks(posts)
-    if (suggestions.length > 0) {
-      console.log(suggestions);
+    if (suggestions.length === 0) {
+      console.log("Unable to find matching blog");
+      return
     }
+    console.log(suggestions)
+    
   })
 
 program.parse()

@@ -3,7 +3,7 @@ import type { Post } from "./parser";
 type LinkSuggestion = {
   sourceFile: string;
   targetPost: string;
-  text: string;
+  matchedText: string;
   confidence: number;
 };
 
@@ -14,16 +14,16 @@ export function lookForLinks(posts: Post[]) {
     for (const target of posts) {
       if (post.path === target.path) continue;
       
-      const content = target.content.toLowerCase()
-      const title = target.content.toLowerCase()
-
+      const content = post.content.toLowerCase()
+      const title = target.title.toLowerCase()
       const start = content.indexOf(title);
+      const matchedText = content.substring(start, start + title.length);
 
       if (start !== -1) {
         suggestions.push({
           sourceFile: post.path,
           targetPost: target.path,
-          text: post.title,
+          matchedText,
           confidence: calculateScore(content,title)
         })
       }

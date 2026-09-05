@@ -1,6 +1,6 @@
 import type { Post } from "./parser";
 
-type LinkSuggestion = {
+export type LinkSuggestion = {
   sourceFile: string;
   targetPost: string;
   matchedText: string;

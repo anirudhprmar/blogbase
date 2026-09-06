@@ -83,4 +83,29 @@ describe('CLI', () => {
     const { exitCode } = await runCli(['analyze', join(tempDir, 'nonexistent')])
     expect(exitCode).not.toBe(0)
   })
+
+  it('should output valid JSON with --json flag', async () => {
+    await writeFile(join(tempDir, 'a.mdx'), '---\ntitle: A\n---\nAbout the B project.')
+    await writeFile(join(tempDir, 'b.mdx'), '---\ntitle: B\n---\nContent B')
+    const { stdout, exitCode } = await runCli(['analyze', tempDir, '--json'])
+    expect(exitCode).toBe(0)
+    const parsed = JSON.parse(stdout)
+    expect(parsed.scanned).toBe(2)
+    expect(Array.isArray(parsed.suggestions)).toBe(true)
+    expect(parsed.suggestions[0]).toMatchObject({
+      sourceFile: join(tempDir, 'a.mdx'),
+      targetPost: join(tempDir, 'b.mdx'),
+      matchedText: 'b',
+      confidence: 100,
+    })
+  })
+
+  it('should output JSON error when no .mdx files found with --json flag', async () => {
+    const { stdout, exitCode } = await runCli(['analyze', tempDir, '--json'])
+    expect(exitCode).toBe(0)
+    const parsed = JSON.parse(stdout)
+    expect(parsed.scanned).toBe(0)
+    expect(parsed.suggestions).toEqual([])
+    expect(parsed.error).toContain('No .mdx files found')
+  })
 })

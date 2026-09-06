@@ -43,35 +43,60 @@ program
   .command("analyze")
   .description("Analyze content directory for internal link opportunities")
   .argument("<path>", "directory to scan for .mdx files")
-  .action(async (path: string) => {
-    console.log();
-    console.log(`  ${pc.bold(pc.cyan("blogbase"))} ${pc.dim("v" + program.version())}`);
-    console.log();
+  .option("-j, --json", "output results as JSON")
+  .action(async (path: string, options: { json?: boolean }) => {
+    if (!options.json) {
+      console.log();
+      console.log(`  ${pc.bold(pc.cyan("blogbase"))} ${pc.dim("v" + program.version())}`);
+      console.log();
+    }
 
-    const stop1 = spinner("Scanning for .mdx files...");
+    const stop1 = options.json ? () => {} : spinner("Scanning for .mdx files...");
     const files = await findFiles(path);
     stop1();
 
     if (files.length === 0) {
+      if (options.json) {
+        console.log(
+          JSON.stringify({ scanned: 0, suggestions: [], error: `No .mdx files found in ${path}` })
+        );
+        return;
+      }
       console.log(`  ${pc.red("✕")} No .mdx files found in ${pc.bold(path)}`);
       console.log();
       return;
     }
 
-    console.log(`  ${pc.green("✓")} Found ${pc.bold(String(files.length))} post${files.length > 1 ? "s" : ""}`);
+    if (!options.json) {
+      console.log(`  ${pc.green("✓")} Found ${pc.bold(String(files.length))} post${files.length > 1 ? "s" : ""}`);
+    }
 
-    const stop2 = spinner("Parsing frontmatter...");
+    const stop2 = options.json ? () => {} : spinner("Parsing frontmatter...");
     const posts: Post[] = [];
     for (const file of files) {
       const post = await parseFile(file);
       posts.push(post);
     }
     stop2();
-    console.log(`  ${pc.green("✓")} Parsed ${pc.bold(String(posts.length))} posts`);
 
-    const stop3 = spinner("Analyzing link opportunities...");
+    if (!options.json) {
+      console.log(`  ${pc.green("✓")} Parsed ${pc.bold(String(posts.length))} posts`);
+    }
+
+    const stop3 = options.json ? () => {} : spinner("Analyzing link opportunities...");
     const suggestions = lookForLinks(posts);
     stop3();
+
+    if (options.json) {
+      console.log(
+        JSON.stringify({
+          scanned: posts.length,
+          suggestions,
+        })
+      );
+      return;
+    }
+
     console.log(`  ${pc.green("✓")} Analysis complete`);
     console.log();
 

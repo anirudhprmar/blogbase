@@ -3,6 +3,7 @@ import pc from "picocolors";
 import { findFiles } from "./scanner";
 import { parseFile, type Post } from "./parser";
 import { lookForLinks } from "./link";
+import { applyLinks } from "./apply";
 
 const FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
@@ -32,6 +33,18 @@ function confidenceLabel(score: number): string {
   if (score >= 100) return pc.green("high");
   if (score >= 60) return pc.yellow("medium");
   return pc.red("low");
+}
+
+function lineDiff(original: string, modified: string): { removed: string; added: string } | null {
+  const o = original.split("\n");
+  const m = modified.split("\n");
+  const len = Math.max(o.length, m.length);
+  for (let i = 0; i < len; i++) {
+    if (o[i] !== m[i]) {
+      return { removed: o[i] ?? "", added: m[i] ?? "" };
+    }
+  }
+  return null;
 }
 
 program
@@ -135,6 +148,76 @@ program
     console.log(
       `  ${pc.dim("Scanned")} ${pc.bold(String(posts.length))} posts → ${pc.bold(String(suggestions.length))} opportunities`
     );
+    console.log();
+  });
+
+program
+  .command("apply")
+  .description("Apply internal link suggestions to MDX files (preview by default)")
+  .argument("<path>", "directory to scan for .mdx files")
+  .option("--write", "write changes to files instead of previewing")
+  .action(async (path: string, options: { write?: boolean }) => {
+    console.log();
+    console.log(`  ${pc.bold(pc.cyan("blogbase"))} ${pc.dim("v" + program.version())}`);
+    console.log();
+
+    const stop1 = spinner("Scanning for .mdx files...");
+    const files = await findFiles(path);
+    stop1();
+
+    if (files.length === 0) {
+      console.log(`  ${pc.red("✕")} No .mdx files found in ${pc.bold(path)}`);
+      console.log();
+      return;
+    }
+
+    console.log(`  ${pc.green("✓")} Found ${pc.bold(String(files.length))} post${files.length > 1 ? "s" : ""}`);
+
+    const stop2 = spinner("Parsing frontmatter...");
+    const posts: Post[] = [];
+    for (const file of files) {
+      const post = await parseFile(file);
+      posts.push(post);
+    }
+    stop2();
+    console.log(`  ${pc.green("✓")} Parsed ${pc.bold(String(posts.length))} posts`);
+
+    const stop3 = spinner("Analyzing link opportunities...");
+    const suggestions = lookForLinks(posts);
+    stop3();
+
+    const stop4 = options.write ? spinner("Applying changes...") : spinner("Preparing preview...");
+    const changes = await applyLinks(suggestions, !!options.write);
+    stop4();
+    console.log(`  ${pc.green("✓")} ${options.write ? "Applied" : "Preview generated"}`);
+    console.log();
+
+    if (changes.length === 0) {
+      console.log(`  ${pc.yellow("›")} No link changes to ${options.write ? "apply" : "preview"}.`);
+      console.log();
+      return;
+    }
+
+    for (const change of changes) {
+      console.log(`  ${pc.bold(pc.cyan(change.sourceFile))}`);
+      const diff = lineDiff(change.original, change.modified);
+      if (diff) {
+        console.log(`    ${pc.red("−")} ${diff.removed}`);
+        console.log(`    ${pc.green("+")} ${diff.added}`);
+      }
+      console.log();
+    }
+
+    console.log(`  ${pc.dim("─".repeat(50))}`);
+    if (options.write) {
+      console.log(
+        `  ${pc.dim("Updated")} ${pc.bold(String(changes.length))} link${changes.length > 1 ? "s" : ""} in ${pc.bold(String(files.length))} post${files.length > 1 ? "s" : ""}`
+      );
+    } else {
+      console.log(
+        `  ${pc.dim("Preview")} ${pc.bold(String(changes.length))} link${changes.length > 1 ? "s" : ""} — run ${pc.cyan("--write")} to apply`
+      );
+    }
     console.log();
   });
 

@@ -3,7 +3,9 @@ import type { Post } from "./parser";
 export type LinkSuggestion = {
   sourceFile: string;
   targetPost: string;
+  targetSlug: string;
   matchedText: string;
+  originalMatch: string;
   confidence: number;
 };
 
@@ -28,10 +30,14 @@ export function lookForLinks(posts: Post[]) {
         }
         suggestedTargets.get(post.path)!.add(target.path);
 
+        const originalMatch = findOriginalCase(post.content, title);
+
         suggestions.push({
           sourceFile: post.path,
           targetPost: target.path,
+          targetSlug: target.slug,
           matchedText: title,
+          originalMatch,
           confidence: calculateScore(content, title)
         })
       }
@@ -73,4 +79,14 @@ function cleanContent(content: string): string {
 
 function normalize(text: string) {
   return text.toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim()
+}
+
+function findOriginalCase(content: string, lowerTitle: string): string {
+  const regex = new RegExp(escapeRegex(lowerTitle), "i");
+  const match = content.match(regex);
+  return match ? match[0] : lowerTitle;
+}
+
+function escapeRegex(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

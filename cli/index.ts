@@ -1,9 +1,9 @@
 import { program } from "commander";
 import pc from "picocolors";
-import { findFiles } from "./scanner";
-import { parseFile, type Post } from "./parser";
-import { lookForLinks } from "./link";
-import { applyLinks } from "./apply";
+import { findFiles } from "../core/scanner";
+import { parseFile, type Post } from "../core/parser";
+import { lookForLinks } from "../core/link";
+import { applyLinks } from "../core/apply";
 
 const FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 

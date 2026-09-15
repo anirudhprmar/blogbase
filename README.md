@@ -63,6 +63,37 @@ Preview output:
 
 Running `apply` is idempotent — it won't double-link text that already has a link.
 
+### MCP server
+
+`blogbase-mcp` exposes the analyzer as a read-only Model Context Protocol server over stdio, so agents (Claude, Cursor, opencode, etc.) can inspect your posts and link opportunities without modifying files.
+
+```bash
+blogbase-mcp
+```
+
+Add it to your client's MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "blogbase": {
+      "command": "bun",
+      "args": ["run", "mcp/index.ts"]
+    }
+  }
+}
+```
+
+Tools (all take `contentPath` per call):
+
+| Tool        | Purpose                                            |
+| ----------- | -------------------------------------------------- |
+| `analyze`   | Return link suggestions (same shape as `--json`)   |
+| `preview`   | Diff of what `apply` would change — never writes   |
+| `listPosts` | List post titles, slugs, and paths                 |
+
+The MCP server is read-only by design. To commit changes, agents invoke the CLI (`blogbase apply --write`) themselves.
+
 ### How it works
 
 1. Scans for `.mdx` files recursively

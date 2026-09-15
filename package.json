@@ -1,9 +1,9 @@
 {
-  "name": "cli",
+  "name": "blogbase",
   "bin": {
-    "blogbase": "./index.ts"
+    "blogbase": "./cli/index.ts",
+    "blogbase-mcp": "./mcp/index.ts"
   },
-  "module": "index.ts",
   "type": "module",
   "scripts": {
     "test": "bun test"
@@ -15,6 +15,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "commander": "^15.0.0",
     "gray-matter": "^4.0.3",
     "picocolors": "^1.1.1"

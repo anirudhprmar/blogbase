@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'bun:test'
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { findFiles } from '../scanner'
+import { findFiles } from '../core/scanner'
 
 describe('findFiles', () => {
   let tempDir: string

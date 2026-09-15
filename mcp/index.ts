@@ -1,6 +1,8 @@
+#!/usr/bin/env bun
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import pkg from "../package.json";
 import { findFiles } from "../core/scanner";
 import { parseFile } from "../core/parser";
 import { lookForLinks } from "../core/link";
@@ -8,7 +10,7 @@ import { applyLinks } from "../core/apply";
 
 const server = new McpServer({
   name: "blogbase",
-  version: "0.1.0",
+  version: pkg.version,
 });
 
 async function loadContent(contentPath: string) {

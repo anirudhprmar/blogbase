@@ -91,6 +91,7 @@ describe('MCP', () => {
   it('should advertise the blogbase server name', async () => {
     const res = await session.initialize()
     expect(res.result.serverInfo.name).toBe('blogbase')
+    expect(res.result.serverInfo.version).toBe('0.2.0')
   })
 
   it('should expose analyze, preview, and listPosts tools', async () => {

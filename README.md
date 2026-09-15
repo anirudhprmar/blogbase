@@ -1,11 +1,21 @@
 ## blogbase
 
-Internal link analyzer for MDX blogs. Scans your content directory, finds where one post mentions another post's title, and suggests (or applies) internal links.
+Internal link analyzer for MDX blogs. Scans your content directory, finds where one post mentions another post's title, and suggests (or applies) internal links. Ships a CLI and a read-only MCP server for agents.
+
+> Requires [Bun](https://bun.sh) (>= 1.0). The package ships raw TypeScript and runs exclusively on the Bun runtime.
 
 ### Install
 
 ```bash
-bun install
+bun add -g blogbase        # install CLI globally
+bun add blogbase           # or scope it to a project
+```
+
+Use it from an agent or one-off:
+
+```bash
+bunx blogbase analyze ./content
+bunx blogbase-mcp           # MCP server over stdio
 ```
 
 ### Commands
@@ -77,8 +87,8 @@ Add it to your client's MCP configuration:
 {
   "mcpServers": {
     "blogbase": {
-      "command": "bun",
-      "args": ["run", "mcp/index.ts"]
+      "command": "bunx",
+      "args": ["blogbase-mcp"]
     }
   }
 }

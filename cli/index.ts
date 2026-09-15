@@ -1,5 +1,7 @@
+#!/usr/bin/env bun
 import { program } from "commander";
 import pc from "picocolors";
+import pkg from "../package.json";
 import { findFiles } from "../core/scanner";
 import { parseFile, type Post } from "../core/parser";
 import { lookForLinks } from "../core/link";
@@ -50,7 +52,7 @@ function lineDiff(original: string, modified: string): { removed: string; added:
 program
   .name("blogbase")
   .description("Internal link analyzer for MDX blogs")
-  .version("0.1.0");
+  .version(pkg.version);
 
 program
   .command("analyze")
@@ -128,7 +130,7 @@ program
     const maxTitle = 36;
 
     for (let i = 0; i < suggestions.length; i++) {
-      const s = suggestions[i];
+      const s = suggestions[i]!;
       const sourceName = truncate(s.sourceFile, maxTitle);
       const targetName = truncate(s.targetPost, maxTitle);
       const matched = truncate(s.matchedText, 32);

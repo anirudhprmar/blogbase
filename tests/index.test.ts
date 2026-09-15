@@ -29,7 +29,7 @@ describe('CLI', () => {
 
   it('should show version flag', async () => {
     const { stdout } = await runCli(['--version'])
-    expect(stdout).toBe('0.1.0')
+    expect(stdout).toBe('0.2.0')
   })
 
   it('should show help text', async () => {
@@ -39,12 +39,14 @@ describe('CLI', () => {
     expect(stdout).toContain('Internal link analyzer')
   })
 
-  it('should find .mdx files and print them', async () => {
-    await writeFile(join(tempDir, 'hello.mdx'), '---\ntitle: Hello\n---\nBody')
+  it('should find .mdx files and show link suggestions', async () => {
+    await writeFile(join(tempDir, 'hello.mdx'), '---\ntitle: Hello\n---\nA post mentioning the World.')
+    await writeFile(join(tempDir, 'world.mdx'), '---\ntitle: World\n---\nContent')
     const { stdout, exitCode } = await runCli(['analyze', tempDir])
     expect(exitCode).toBe(0)
-    expect(stdout).toContain('Found 1 post')
-    expect(stdout).toContain('Hello')
+    expect(stdout).toContain('Found 2 posts')
+    expect(stdout).toContain('1 suggestion')
+    expect(stdout).toContain('Match "world"')
   })
 
   it('should show "No .mdx files found" when directory is empty', async () => {
@@ -54,23 +56,23 @@ describe('CLI', () => {
   })
 
   it('should find multiple .mdx files', async () => {
-    await writeFile(join(tempDir, 'a.mdx'), '---\ntitle: A\n---\nContent A')
+    await writeFile(join(tempDir, 'a.mdx'), '---\ntitle: A\n---\nContent about B project')
     await writeFile(join(tempDir, 'b.mdx'), '---\ntitle: B\n---\nContent B')
     const { stdout, exitCode } = await runCli(['analyze', tempDir])
     expect(exitCode).toBe(0)
     expect(stdout).toContain('Found 2 posts')
-    expect(stdout).toContain('A')
-    expect(stdout).toContain('B')
+    expect(stdout).toContain('Match "b"')
   })
 
   it('should find .mdx files in nested directories', async () => {
     const nestedDir = join(tempDir, 'blog', 'posts')
     await mkdir(nestedDir, { recursive: true })
-    await writeFile(join(nestedDir, 'post.mdx'), '---\ntitle: Post\n---\nBody')
+    await writeFile(join(nestedDir, 'post.mdx'), '---\ntitle: Post\n---\nMentions the Guide.')
+    await writeFile(join(tempDir, 'guide.mdx'), '---\ntitle: Guide\n---\nContent')
     const { stdout, exitCode } = await runCli(['analyze', tempDir])
     expect(exitCode).toBe(0)
-    expect(stdout).toContain('Found 1 post')
-    expect(stdout).toContain('Post')
+    expect(stdout).toContain('Found 2 posts')
+    expect(stdout).toContain('Match "guide"')
   })
 
   it('should not match .md files', async () => {

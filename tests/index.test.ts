@@ -79,10 +79,12 @@ describe('CLI', () => {
     expect(stdout).toContain('Match "guide"')
   })
 
-  it('should not match .md files', async () => {
-    await writeFile(join(tempDir, 'readme.md'), '# Hello')
-    const { stdout } = await runCli(['analyze', tempDir])
-    expect(stdout).toContain('No .mdx files found')
+  it('should analyze .md files', async () => {
+    await writeFile(join(tempDir, 'readme.md'), '---\ntitle: Readme\n---\nHello')
+    const { stdout, exitCode } = await runCli(['analyze', tempDir])
+    expect(exitCode).toBe(0)
+    expect(stdout).toContain('Found 1 post')
+    expect(stdout).toContain('No link suggestions found')
   })
 
   it('should error on non-existent path', async () => {

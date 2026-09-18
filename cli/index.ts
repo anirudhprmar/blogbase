@@ -51,7 +51,7 @@ function lineDiff(original: string, modified: string): { removed: string; added:
 
 program
   .name("blogsbase")
-  .description("Internal link analyzer for MDX blogs")
+  .description("Internal link analyzer for MD/MDX blogs")
   .version(pkg.version);
 
 program

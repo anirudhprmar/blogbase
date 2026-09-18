@@ -1,6 +1,6 @@
 ## blogsbase
 
-Internal link analyzer for MDX blogs. Scans your content directory, finds where one post mentions another post's title, and suggests (or applies) internal links. Ships a CLI and a read-only MCP server for agents.
+Internal link analyzer for MD/MDX blogs. Scans your content directory, finds where one post mentions another post's title, and suggests (or applies) internal links. Ships a CLI and a read-only MCP server for agents.
 
 > Requires [Bun](https://bun.sh) (>= 1.0). The package ships raw TypeScript and runs exclusively on the Bun runtime.
 

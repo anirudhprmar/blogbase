@@ -1,7 +1,7 @@
 {
   "name": "blogsbase",
   "version": "0.2.0",
-  "description": "Internal link analyzer and MCP server for MDX blogs",
+  "description": "Internal link analyzer and MCP server for MD/MDX blogs",
   "license": "MIT",
   "bin": {
     "blogsbase": "cli/index.ts",

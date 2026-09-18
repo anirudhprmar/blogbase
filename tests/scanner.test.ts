@@ -15,8 +15,8 @@ describe('findFiles', () => {
     await rm(tempDir, { recursive: true, force: true })
   })
 
-  it('should return an empty array for a directory with no .mdx files', async () => {
-    await writeFile(join(tempDir, 'readme.md'), '# Hello')
+  it('should return an empty array for a directory with no markdown files', async () => {
+    await writeFile(join(tempDir, 'notes.txt'), '# Hello')
     const files = await findFiles(tempDir)
     expect(files).toEqual([])
   })
@@ -38,12 +38,12 @@ describe('findFiles', () => {
     expect(files[0]).toContain('post.mdx')
   })
 
-  it('should not match .md files', async () => {
+  it('should match both .md and .mdx files', async () => {
     await writeFile(join(tempDir, 'readme.md'), '# Hello')
     await writeFile(join(tempDir, 'notes.mdx'), '---')
     const files = await findFiles(tempDir)
-    expect(files.length).toBe(1)
-    expect(files[0]).toContain('notes.mdx')
+    expect(files.length).toBe(2)
+    expect(files.every((f) => f.endsWith('.md') || f.endsWith('.mdx'))).toBe(true)
   })
 
   it('should not match files with mdx in the middle of the name', async () => {

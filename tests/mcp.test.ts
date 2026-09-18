@@ -76,7 +76,7 @@ describe('MCP', () => {
   let session: MCPSession
 
   beforeEach(async () => {
-    tempDir = await mkdtemp(join(tmpdir(), 'blogbase-mcp-test-'))
+    tempDir = await mkdtemp(join(tmpdir(), 'blogsbase-mcp-test-'))
     await writeFile(join(tempDir, 'a.mdx'), '---\ntitle: A\nslug: a\n---\nA post referencing the B post.')
     await writeFile(join(tempDir, 'b.mdx'), '---\ntitle: B\nslug: b\n---\nContent B')
     session = new MCPSession()
@@ -88,9 +88,9 @@ describe('MCP', () => {
     await rm(tempDir, { recursive: true, force: true })
   })
 
-  it('should advertise the blogbase server name', async () => {
+  it('should advertise the blogsbase server name', async () => {
     const res = await session.initialize()
-    expect(res.result.serverInfo.name).toBe('blogbase')
+    expect(res.result.serverInfo.name).toBe('blogsbase')
     expect(res.result.serverInfo.version).toBe('0.2.0')
   })
 

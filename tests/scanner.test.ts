@@ -8,7 +8,7 @@ describe('findFiles', () => {
   let tempDir: string
 
   beforeEach(async () => {
-    tempDir = await mkdtemp(join(tmpdir(), 'blogbase-test-'))
+    tempDir = await mkdtemp(join(tmpdir(), 'blogsbase-test-'))
   })
 
   afterEach(async () => {

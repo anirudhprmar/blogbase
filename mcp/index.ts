@@ -9,7 +9,7 @@ import { lookForLinks } from "../core/link";
 import { applyLinks } from "../core/apply";
 
 const server = new McpServer({
-  name: "blogbase",
+  name: "blogsbase",
   version: pkg.version,
 });
 

@@ -50,7 +50,7 @@ function lineDiff(original: string, modified: string): { removed: string; added:
 }
 
 program
-  .name("blogbase")
+  .name("blogsbase")
   .description("Internal link analyzer for MDX blogs")
   .version(pkg.version);
 
@@ -62,7 +62,7 @@ program
   .action(async (path: string, options: { json?: boolean }) => {
     if (!options.json) {
       console.log();
-      console.log(`  ${pc.bold(pc.cyan("blogbase"))} ${pc.dim("v" + program.version())}`);
+      console.log(`  ${pc.bold(pc.cyan("blogsbase"))} ${pc.dim("v" + program.version())}`);
       console.log();
     }
 
@@ -160,7 +160,7 @@ program
   .option("--write", "write changes to files instead of previewing")
   .action(async (path: string, options: { write?: boolean }) => {
     console.log();
-    console.log(`  ${pc.bold(pc.cyan("blogbase"))} ${pc.dim("v" + program.version())}`);
+    console.log(`  ${pc.bold(pc.cyan("blogsbase"))} ${pc.dim("v" + program.version())}`);
     console.log();
 
     const stop1 = spinner("Scanning for .mdx files...");

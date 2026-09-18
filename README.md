@@ -1,4 +1,4 @@
-## blogbase
+## blogsbase
 
 Internal link analyzer for MDX blogs. Scans your content directory, finds where one post mentions another post's title, and suggests (or applies) internal links. Ships a CLI and a read-only MCP server for agents.
 
@@ -7,15 +7,15 @@ Internal link analyzer for MDX blogs. Scans your content directory, finds where 
 ### Install
 
 ```bash
-bun add -g blogbase        # install CLI globally
-bun add blogbase           # or scope it to a project
+bun add -g blogsbase            # install CLI globally
+bun add blogsbase               # or scope it to a project
 ```
 
 Use it from an agent or one-off:
 
 ```bash
-bunx blogbase analyze ./content
-bunx blogbase-mcp           # MCP server over stdio
+bunx blogsbase analyze ./content
+bunx blogsbase-mcp           # MCP server over stdio
 ```
 
 ### Commands
@@ -25,13 +25,13 @@ bunx blogbase-mcp           # MCP server over stdio
 Scan a directory for `.mdx` files and find link opportunities.
 
 ```bash
-blogbase analyze ./content
+blogsbase analyze ./content
 ```
 
 With JSON output for scripting / MCP integration:
 
 ```bash
-blogbase analyze ./content --json
+blogsbase analyze ./content --json
 ```
 
 JSON output:
@@ -57,8 +57,8 @@ JSON output:
 Apply link suggestions to your MDX files. Preview by default (no files modified).
 
 ```bash
-blogbase apply ./content          # preview changes
-blogbase apply ./content --write  # write changes to disk
+blogsbase apply ./content          # preview changes
+blogsbase apply ./content --write  # write changes to disk
 ```
 
 Preview output:
@@ -75,10 +75,10 @@ Running `apply` is idempotent — it won't double-link text that already has a l
 
 ### MCP server
 
-`blogbase-mcp` exposes the analyzer as a read-only Model Context Protocol server over stdio, so agents (Claude, Cursor, opencode, etc.) can inspect your posts and link opportunities without modifying files.
+`blogsbase-mcp` exposes the analyzer as a read-only Model Context Protocol server over stdio, so agents (Claude, Cursor, opencode, etc.) can inspect your posts and link opportunities without modifying files.
 
 ```bash
-blogbase-mcp
+blogsbase-mcp
 ```
 
 Add it to your client's MCP configuration:
@@ -86,9 +86,9 @@ Add it to your client's MCP configuration:
 ```json
 {
   "mcpServers": {
-    "blogbase": {
+    "blogsbase": {
       "command": "bunx",
-      "args": ["blogbase-mcp"]
+      "args": ["blogsbase-mcp"]
     }
   }
 }
@@ -102,7 +102,7 @@ Tools (all take `contentPath` per call):
 | `preview`   | Diff of what `apply` would change — never writes   |
 | `listPosts` | List post titles, slugs, and paths                 |
 
-The MCP server is read-only by design. To commit changes, agents invoke the CLI (`blogbase apply --write`) themselves.
+The MCP server is read-only by design. To commit changes, agents invoke the CLI (`blogsbase apply --write`) themselves.
 
 ### How it works
 

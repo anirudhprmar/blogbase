@@ -1,11 +1,11 @@
 {
-  "name": "blogbase",
+  "name": "blogsbase",
   "version": "0.2.0",
   "description": "Internal link analyzer and MCP server for MDX blogs",
   "license": "MIT",
   "bin": {
-    "blogbase": "./cli/index.ts",
-    "blogbase-mcp": "./mcp/index.ts"
+    "blogsbase": "cli/index.ts",
+    "blogsbase-mcp": "mcp/index.ts"
   },
   "files": [
     "cli",
@@ -15,7 +15,7 @@
   "type": "module",
   "scripts": {
     "test": "bun test",
-    "prepublishOnly": "bun test && bunx tsc --noEmit"
+    "prepublishOnly": "bun test && bun x tsc --noEmit"
   },
   "devDependencies": {
     "@types/bun": "latest"

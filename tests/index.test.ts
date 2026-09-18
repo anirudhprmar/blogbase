@@ -5,6 +5,10 @@ import { tmpdir } from 'node:os'
 
 const CLI_PATH = join(import.meta.dir, '..', 'cli', 'index.ts')
 
+function stripAnsi(input: string): string {
+  return input.replace(/\u001B\[[0-9;]*m/g, '')
+}
+
 async function runCli(args: string[]): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   const proc = Bun.spawn(['bun', 'run', CLI_PATH, ...args], {
     stdout: 'pipe',
@@ -13,14 +17,14 @@ async function runCli(args: string[]): Promise<{ exitCode: number; stdout: strin
   const stdout = await new Response(proc.stdout).text()
   const stderr = await new Response(proc.stderr).text()
   const exitCode = await proc.exited
-  return { exitCode, stdout: stdout.trim(), stderr: stderr.trim() }
+  return { exitCode, stdout: stripAnsi(stdout).trim(), stderr: stripAnsi(stderr).trim() }
 }
 
 describe('CLI', () => {
   let tempDir: string
 
   beforeEach(async () => {
-    tempDir = await mkdtemp(join(tmpdir(), 'blogbase-cli-test-'))
+    tempDir = await mkdtemp(join(tmpdir(), 'blogsbase-cli-test-'))
   })
 
   afterEach(async () => {
@@ -34,7 +38,7 @@ describe('CLI', () => {
 
   it('should show help text', async () => {
     const { stdout } = await runCli(['--help'])
-    expect(stdout).toContain('blogbase')
+    expect(stdout).toContain('blogsbase')
     expect(stdout).toContain('analyze')
     expect(stdout).toContain('Internal link analyzer')
   })
